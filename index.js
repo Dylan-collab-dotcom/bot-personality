@@ -1,38 +1,19 @@
-// 1. Charger les variables d'environnement en tout premier
-require('dotenv').config(); 
-
+require('dotenv').config();
 const express = require('express');
 const { Client, GatewayIntentBits, Partials } = require('discord.js');
 const OpenAI = require('openai');
 
-// 2. Initialiser le serveur Express
 const app = express();
 const port = process.env.PORT || 3000;
 app.get('/', (req, res) => res.send('Bot Chloé en ligne !'));
 app.listen(port, () => console.log(`Serveur web actif sur le port ${port}`));
 
-// 3. Initialiser OpenAI avec la clé chargée
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-// 4. Initialiser le client Discord
-const client = new Client({ 
-    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.DirectMessages],
-    partials: [Partials.Channel]
-});
-
-// Serveur web pour garder le bot éveillé
-app.get('/', (req, res) => res.send('Bot Chloé en ligne !'));
-app.listen(port, () => console.log(`Serveur web actif sur le port ${port}`));
-
-const { Client, GatewayIntentBits, Partials } = require('discord.js');
-const OpenAI = require('openai');
 
 const client = new Client({ 
     intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.DirectMessages],
     partials: [Partials.Channel]
 });
-
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 const PERSONNALITE = `Tu es Chloé, une fille de 22 ans, modèle amateur, fragile et réservée.
 
