@@ -1,3 +1,4 @@
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 require('dotenv').config();
 const express = require('express');
 const app = express();
