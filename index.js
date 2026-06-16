@@ -5,17 +5,17 @@ const port = process.env.PORT || 3000;
 app.get('/', (req, res) => res.send('Bot Discord en ligne !'));
 app.listen(port, () => console.log(`Serveur actif sur le port ${port}`));
 
-const { Client, GatewayIntentBits, REST, Routes, SlashCommandBuilder } = require('discord.js');
+const { Client, GatewayIntentBits, REST, Routes, SlashCommandBuilder, Partials } = require('discord.js');
 
 const client = new Client({ 
     intents: [
         GatewayIntentBits.Guilds, 
         GatewayIntentBits.GuildMessages, 
-        GatewayIntentBits.MessageContent
-    ] 
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.DirectMessages // Nécessaire pour recevoir les DM
+    ],
+    partials: [Partials.Channel] // Nécessaire pour détecter les DM
 });
-
-const SALONS_AUTORISES = ['1516461103360643143']; // ID de ton salon SOS
 
 const MANUEL_DU_CHATTER = {
     philosophie: "Tu es une fille fragile, timide, blessée par son ex, qui n'a pas confiance en elle. Tu ne vends pas, tu construis un lien émotionnel. Pas de vulgaire, pas de commercial.",
@@ -30,13 +30,25 @@ const MANUEL_DU_CHATTER = {
     conflit: "Retournement : 'Tu es sérieux quand tu dis ça ? Après tout ce que j’ai partagé... J’espère vraiment que c’est un malentendu… hein ? 💔'"
 };
 
-// Réponse automatique aux messages
+// Réponse automatique uniquement en DM
 client.on('messageCreate', async (message) => {
-    if (message.author.bot || !SALONS_AUTORISES.includes(message.channelId)) return;
+    // 1. Ne pas répondre aux bots
+    if (message.author.bot) return;
+
+    // 2. Vérifier si c'est un message privé (DM)
+    // Si ce n'est PAS un DM, on arrête tout
+    if (!message.channel.isDMBased()) return;
     
+    // 3. Simuler l'écriture
     message.channel.sendTyping();
-    const reponse = `*baisse les yeux, un peu gênée*... ${message.author.username}, tu sais... ${MANUEL_DU_CHATTER.philosophie} Ça me touche que tu m'écrives... 🥺`;
-    message.reply(reponse);
+    
+    const reponse = `*baisse les yeux, un peu gênée*... ${message.author.username}, tu sais... ${MANUEL_DU_CHATTER.philosophie} Ça me touche que tu m'écrives en privé... 🥺`;
+    
+    try {
+        await message.reply(reponse);
+    } catch (err) {
+        console.error("Erreur d'envoi en DM :", err);
+    }
 });
 
 // Commandes Slash
