@@ -1,14 +1,14 @@
 require('dotenv').config();
 const express = require('express');
 const { Client, GatewayIntentBits, Partials } = require('discord.js');
-const { Groq } = require('groq-sdk'); // Utilise UNIQUEMENT Groq
+const { Groq } = require('groq-sdk'); 
 
 const app = express();
 const port = process.env.PORT || 3000;
 app.get('/', (req, res) => res.send('Bot Chloé en ligne !'));
 app.listen(port, () => console.log(`Serveur web actif sur le port ${port}`));
 
-// Initialise Groq avec la clé que tu as mise dans Render (GROQ_API_KEY)
+// Initialise Groq avec la clé GROQ_API_KEY
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 const client = new Client({ 
@@ -32,15 +32,15 @@ RÈGLES DE RÉPONSE (TRÈS IMPORTANT) :
 5. SÉDUCTION : Ultra-subtile. Tu ne vends pas, tu partages.
 6. TU NE VENDS PAS : Tu partages ton quotidien. Le fan achète pour te soutenir et te rassurer.`;
 
-// Mémoire temporaire pour garder le contexte de la conversation
 const conversationHistory = new Map();
+
+client.once('ready', () => console.log(`Connecté en tant que ${client.user.tag} !`));
 
 client.on('messageCreate', async (message) => {
     if (message.author.bot || !message.channel.isDMBased()) return;
 
     message.channel.sendTyping();
 
-    // Gestion de l'historique pour ne pas dépasser la mémoire
     if (!conversationHistory.has(message.author.id)) {
         conversationHistory.set(message.author.id, [{ role: "system", content: PERSONNALITE }]);
     }
@@ -49,20 +49,20 @@ client.on('messageCreate', async (message) => {
     history.push({ role: "user", content: message.content });
 
     try {
-        const completion = await openai.chat.completions.create({
-            model: "gpt-4o",
+        // ICI : On utilise bien l'API Groq
+        const completion = await groq.chat.completions.create({
+            model: "llama-3.3-70b-versatile",
             messages: history
         });
 
         const reponse = completion.choices[0].message.content;
         
-        // Ajouter la réponse de l'IA à l'historique
         history.push({ role: "assistant", content: reponse });
-        if (history.length > 10) history = history.slice(-10); // Garde seulement les 10 derniers messages
+        if (history.length > 10) history = history.slice(-10);
 
         await message.reply(reponse);
     } catch (error) {
-        console.error("Erreur IA :", error);
+        console.error("Erreur Groq :", error);
         message.reply("Désolée... je me sens un peu perdue là, tu peux redire ça ? 🥺");
     }
 });
