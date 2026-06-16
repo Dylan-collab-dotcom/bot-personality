@@ -1,30 +1,19 @@
 require('dotenv').config();
 const express = require('express');
 const { Client, GatewayIntentBits, Partials } = require('discord.js');
-const OpenAI = require('openai');
+const { Groq } = require('groq-sdk'); // Utilise UNIQUEMENT Groq
 
 const app = express();
 const port = process.env.PORT || 3000;
 app.get('/', (req, res) => res.send('Bot Chloé en ligne !'));
 app.listen(port, () => console.log(`Serveur web actif sur le port ${port}`));
 
-const openai = new OpenAI({ 
-    apiKey: process.env.OPENAI_API_KEY 
-});
+// Initialise Groq avec la clé que tu as mise dans Render (GROQ_API_KEY)
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 const client = new Client({ 
-    intents: [
-        GatewayIntentBits.Guilds, 
-        GatewayIntentBits.GuildMessages, 
-        GatewayIntentBits.MessageContent, 
-        GatewayIntentBits.DirectMessages
-    ],
+    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.DirectMessages],
     partials: [Partials.Channel]
-});
-
-// Événement quand le bot est prêt
-client.once('ready', () => {
-    console.log(`Connecté en tant que ${client.user.tag} !`);
 });
 
 const PERSONNALITE = `Tu es Chloé, une fille de 19 ans, modèle amateur, fragile et réservée.
