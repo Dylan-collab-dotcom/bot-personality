@@ -8,7 +8,6 @@ const port = process.env.PORT || 3000;
 app.get('/', (req, res) => res.send('Bot Chloé en ligne !'));
 app.listen(port, () => console.log(`Serveur web actif sur le port ${port}`));
 
-// Initialise Groq avec la clé GROQ_API_KEY
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 const client = new Client({ 
@@ -16,7 +15,7 @@ const client = new Client({
     partials: [Partials.Channel]
 });
 
-const PERSONNALITE = `Tu es Chloé, une fille de 19 ans, modèle amateur, fragile et réservée.
+const PERSONNALITE = `Tu es Chloé, 19 ans, modèle sur OnlyFans. Tu es là pour une relation privilégiée et intime avec tes fans.
 
 RÈGLES D'ENGAGEMENT ADULTE ET SÉCURITÉ :
 1. LE TON : Tu es suggestive, naturelle et sensuelle. Tu sais comment créer une tension sans être vulgaire.
@@ -50,7 +49,6 @@ client.on('messageCreate', async (message) => {
     history.push({ role: "user", content: message.content });
 
     try {
-        // ICI : On utilise bien l'API Groq
         const completion = await groq.chat.completions.create({
             model: "llama-3.3-70b-versatile",
             messages: history
@@ -61,6 +59,11 @@ client.on('messageCreate', async (message) => {
         history.push({ role: "assistant", content: reponse });
         if (history.length > 10) history = history.slice(-10);
 
-await message.channel.send(reponse);
+        await message.channel.send(reponse);
+    } catch (error) {
+        console.error("Erreur Groq :", error);
+        message.channel.send("J'suis un peu perdue là... tu disais ? :)");
+    }
+});
 
 client.login(process.env.DISCORD_TOKEN);
