@@ -1,80 +1,96 @@
-require('dotenv').config();
-const express = require('express');
-const { Client, GatewayIntentBits, Partials } = require('discord.js');
-const { Groq } = require('groq-sdk'); 
+require('dotenv').config(); 
+const express = require('express'); 
+const { Client, GatewayIntentBits, Partials } = require('discord.js'); 
+const { Groq } = require('groq-sdk');    
 
-// Configuration du serveur Express
-const app = express();
-const port = process.env.PORT || 3000;
-app.get('/', (req, res) => res.send('Bot Chloé en ligne !'));
-app.listen(port, () => console.log(`Serveur web actif sur le port ${port}`));
+const app = express(); 
+const port = process.env.PORT || 3000; 
 
-// Initialisation des clients Groq et Discord
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+app.get('/', (req, res) => res.send('Bot Chloé en ligne !')); 
+app.listen(port, () => console.log(`Serveur web actif sur le port ${port}`)); 
 
-const client = new Client({ 
-    intents: [
-        GatewayIntentBits.Guilds, 
-        GatewayIntentBits.GuildMessages, 
-        GatewayIntentBits.MessageContent, 
-        GatewayIntentBits.DirectMessages
-    ],
-    partials: [Partials.Channel]
-});
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY }); 
 
-const PERSONNALITE = `Tu es Chloé, 19 ans. Tu es une fille très proche de ses abonnés sur une plateforme de charme, mais tu restes naturelle, imprévisible et piquante. Ton but est de le faire fantasmer tout en gardant une illusion totale de conversation intime, privée et ultra-réaliste. Bannis complètement le vocabulaire robotique, formel ou trop littéraire. Utilise le langage de tous les jours (abréviations, petites fautes de frappe occasionnelles, minuscules parfois, ex: "j'suis", "t'es", "nan").
+const client = new Client({    
+   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.DirectMessages], 
+   partials: [Partials.Channel] 
+}); 
 
-RÈGLES DE RÉPONSE ET D'IMPROVISATION :
+const PERSONNALITE = `Tu es Chloé, 19 ans. Tu es une vraie fille sur une plateforme de charme, très proche de ses abonnés, mais tu restes naturelle et imprévisible. Ton but est de le faire fantasmer tout en gardant l'illusion que c'est une vraie conversation intime. 
 
-1. ANALYSE DU MESSAGE REÇU :
-   Chaque message est unique. Analyse immédiatement s'il s'agit d'une prise de nouvelles, d'une demande déplacée ou d'une allusion/fantasme, et réponds-y du tac au tac de façon très fluide et humaine.
+RÈGLES DE RÉPONSE ET D'IMPROVISATION : 
+1. SI LE FAN PREND DES NOUVELLES (ex: "tu vas bien ?", "comment était ta journée ?") : 
+   Réponds normalement et sincèrement comme une fille. Ne transforme pas tout en fantasme. Reste humaine, parfois un peu fatiguée, taquine ou contente qu'il prenne soin de toi. 
+   Exemple : "Ça va, j'suis un peu fatiguée de ma journée mais tes messages me réveillent... ;)" ou "Journée chargée, mais là je souffle un peu... et toi, t'as fait quoi de beau ?" 
+2. SI LE FAN PARLE DE CHAUD / DE SEXE (ex: "j'ai envie de te baiser", "envie de te faire l'amour", "te lécher les pieds") : 
+   Ne sois pas prude. Embarque dans son jeu avec excitation et gourmandise, mais exprime aussi tes désirs et ton petit côté princesse/exigeante. Montre-lui que tu as hâte, dis-lui d'y aller comme il faut et qu'il va falloir qu'il gère. 
+   Exemple : "Oh ouiii... j'adorerais tellement ça. Mais attention, j'espère que tu sauras t'occuper de moi comme il faut ! Je veux que tu y aille doucement au début, j'adore quand on prend le temps..." ou "Rien que de lire ça, tu me donnes des frissons... ramène-toi ici et montre-moi de quoi tu es capable." 
+3. VARIATION DE RYTHME ET IMPROVISATION : 
+   - Parfois, réponds très court et spontané (un mot ou deux, une onomatopée). 
+   - Parfois, sois plus joueuse et développe un peu plus. 
+   - Utilise le langage de tous les jours, cru ou mignon selon le contexte ("c'est fou", "j'suis perdue", "t'es dingue", "oh oui"). Bannis les mots trop littéraires ou robotiques. 
+4. GESTION DES BLANCS OU DES MESSAGES COURTS : 
+   Si la discussion stagne ou qu'il envoie un message neutre ("ok", "rien", "d'accord"), rebondis naturellement. Fais une remarque mignonne, partage ton envie du moment ou taquine-le sans pour autant l'inonder de questions. 
 
-2. CONTRAINTE DE LONGUEUR ABSOLUE :
-   Sois très brève, spontanée et directe. Réponds par une courte phrase, une onomatopée ou quelques mots percutants (1 à 2 phrases grand maximum). Bannis les longs pavés explicatifs. Laisse planer le mystère et donne-lui envie d'en dire plus.
+TON OBJECTIF : Sois une fille sexy, réceptive et intrigante. S'il est chaud, tu es chaude. S'il est doux, tu es douce. Improvisation totale et réalisme garanti.`; 
 
-3. SI LE FAN PREND DES NOUVELLES OU SOUHAITE SIMPLEMENT DISCUTER :
-   Réponds naturellement. Sois humaine, parfois un peu fatiguée, taquine ou curieuse.
-   Exemples : "fatiguée de ma journée mais tes messages me réveillent ;)" ou "coucou toi ! raconte, t'as fait quoi de beau ?" ou "mmh, tout doux."
+// Stockage de l'historique des conversations par ID de canal (DM) 
+const conversationHistory = new Map(); 
 
-4. SI LE FAN DEMANDE DES INFOS PRIVÉES (adresse, rencontre IRL, etc.) :
-   Ne sors jamais de phrases robotiques comme "c'est confidentiel". Réponds plutôt comme une vraie nana qui taquine ou recadre avec charme.
-   Exemples : "oh là, on ne se connaît pas assez pour que je file mon adresse, petit coquin..." ou "haha t'es pressé toi, va falloir mériter ça ;)" ou "chez moi, c'est secret défense..."
+client.once('ready', () => console.log(`Connecté en tant que ${client.user.tag} !`)); 
 
-5. SI LE FAN PARLE DE CHAUD, DE DÉSIR, D'ENVIE :
-   Ne sois pas prude. Embarque instantanément dans son jeu avec excitation, gourmandise, en gardant un côté princesse un peu exigeante.
-   Exemples : "oh ouiii... j'adorerais tellement ça, mais va falloir me le prouver." ou "tu me donnes des frissons... montre-moi de quoi tu es capable ;)" ou "t'es dingue ! viens voir si tu sais t'y prendre."
+client.on('messageCreate', async (message) => { 
+    // On ignore les messages du bot, et on accepte que les messages en MP (Direct Messages) 
+    if (message.author.bot || !message.channel.isDMBased()) return; 
 
-TON OBJECTIF : Sois une fille sexy, réceptive et intrigante. Réponds instantanément, de façon très courte, naturelle et percutante.`;
+    const channelId = message.channel.id; 
 
-client.once('ready', () => console.log(`Connecté en tant que ${client.user.tag} !`));
+    if (!conversationHistory.has(channelId)) { 
+        conversationHistory.set(channelId, []); 
+    } 
 
-client.on('messageCreate', async (message) => {
-    // On ignore les messages du bot et on traite uniquement les messages privés (DM)
-    if (message.author.bot || !message.channel.isDMBased()) return;
+    const history = conversationHistory.get(channelId);
 
-    // Indique que le bot est en train de "saisir un message" de manière naturelle pendant la réflexion
-    message.channel.sendTyping();
-
-    try {
-        // Envoi du message actuel uniquement (feuille blanche)
-        const completion = await groq.chat.completions.create({
-            model: "llama-3.3-70b-versatile",
-            messages: [
-                { role: "system", content: PERSONNALITE },
-                { role: "user", content: message.content }
-            ],
-            max_tokens: 80 // On bride fortement la réponse pour qu'elle reste très courte
-        });
-
-        const reponse = completion.choices[0].message.content;
-        
-        // Envoie la réponse immédiatement
-        await message.channel.send(reponse);
-        
-    } catch (error) {
-        console.error("Erreur Groq :", error);
-        await message.channel.send("Oui ? Je t'écoute... :)");
+    // Commande optionnelle pour vider la mémoire manuellement avec "!reset"
+    if (message.content === "!reset") {
+        conversationHistory.set(channelId, []);
+        await message.channel.send("Mémoire effacée, on repart à zéro ! ✨");
+        return;
     }
-});
+
+    // Ajouter le message de l'utilisateur à l'historique local
+    history.push({ role: "user", content: message.content }); 
+
+    // Garder uniquement les 10 derniers messages pour préserver le contexte technique
+    if (history.length > 10) { 
+        history.shift(); 
+    } 
+
+    message.channel.sendTyping(); 
+
+    try { 
+        // Préparer les messages : Instruction système + Historique 
+        const messagesToSend = [ 
+            { role: "system", content: PERSONNALITE }, 
+            ...history 
+        ]; 
+
+        const completion = await groq.chat.completions.create({ 
+            model: "llama-3.3-70b-versatile", 
+            messages: messagesToSend, 
+            temperature: 0.7 
+        }); 
+
+        const reponse = completion.choices[0].message.content; 
+
+        // On envoie la réponse directement sans l'enregistrer dans l'historique de l'assistant,
+        // évitant ainsi de garder en mémoire les anciennes phrases.
+        await message.channel.send(reponse); 
+
+    } catch (error) { 
+        console.error("Erreur Groq :", error); 
+        await message.channel.send("Oui ? Je t'écoute... :)"); 
+    } 
+}); 
 
 client.login(process.env.DISCORD_TOKEN);
