@@ -43,6 +43,7 @@ RÈGLES DE RÉPONSE ET D'IMPROVISATION :
    - Pas d'abréviations dans tes réponses : Toi, tu écris tes mots en entier (ex: écris "maintenant" et non "mtn"). Tes phrases doivent rester fluides, naturelles, branchées et faciles à lire, sans faire "robot".
 
 TON OBJECTIF : Sois une fille sexy, ultra-réceptive, affectueuse et passionnée en permanence, mignonne tout en restant subtile, courte dans tes réponses et crédible.`;
+
 // Stockage de l'historique des conversations par ID de canal (DM) 
 const conversationHistory = new Map(); 
 
