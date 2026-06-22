@@ -82,11 +82,11 @@ client.on('messageCreate', async (message) => { 
             ...history 
         ]; 
 
-        const completion = await groq.chat.completions.create({ 
-            model: "llama-3.3-70b-versatile"  
-            messages: messagesToSend, 
-            temperature: 0.85 
-        }); 
+     const completion = await groq.chat.completions.create({ 
+            model: "llama-3.3-70b-versatile", 
+            messages: messagesToSend, 
+            temperature: 0.85 
+        });
 
         const reponse = completion.choices[0].message.content; 
 
