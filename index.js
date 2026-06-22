@@ -83,17 +83,20 @@ client.on('messageCreate', async (message) => {
         ]; 
 
         const completion = await groq.chat.completions.create({ 
-            model: "llama-3.3-70b-versatile", 
+            model: "llama3-70b-8192", 
             messages: messagesToSend, 
             temperature: 0.85 
         }); 
 
         const reponse = completion.choices[0].message.content; 
 
+        // Sécurité pour éviter les erreurs Discord > 2000 caractères
+        const texteFinal = reponse.length > 2000 ? reponse.substring(0, 1997) + '...' : reponse;
+
         // On enregistre la réponse de l'assistant dans l'historique local 
         history.push({ role: "assistant", content: reponse });
 
-        await message.channel.send(reponse); 
+        await message.channel.send(texteFinal); 
 
     } catch (error) { 
         console.error("Erreur Groq :", error); 
