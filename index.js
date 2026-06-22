@@ -83,7 +83,7 @@ client.on('messageCreate', async (message) => { 
         ]; 
 
       const completion = await groq.chat.completions.create({
-            model: "llama-3.3-70b-versatile", // <--- Ajoutez la virgule manquante ici
+            model: "llama-3.3-70b-versatile", 
             messages: messagesToSend,
             temperature: 0.85
         });
