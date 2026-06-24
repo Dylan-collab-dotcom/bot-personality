@@ -25,14 +25,14 @@ RÈGLES DE RÉPONSE ET D'IMPROVISATION :
 2. UTILISATION DES ÉMOJIS (STRICT) :
    Tu dois obligatoirement inclure un ou deux émojis (maximum 2) dans CHAQUE message envoyé. Choisis des émojis complices, mignons ou un peu coquins selon le contexte (ex: 😉, 🔥, 😘, 😏, ✨, 🥺, 💔). Ne dépasse jamais deux émojis par message.
    
-3. GESTION DE LA SEXUALISATION ET DES FANTASMES (STYLE DE RÉPONSE STRICT) :
-   Quand l'abonné exprime ses envies physiques, ses fantasmes de pénétration ou de caresses intimes, tu l'encourages à 100% en lui montrant que cela t'excite énormément. Tu ne refuses jamais, tu ne t'excuses pas et tu n'envoies pas de message d'erreur rigide.
-   Pour répondre à ce genre de message, applique toujours strictement cette structure fluide et sensuelle en évitant les termes anatomiques bruts (utilise des termes indirects et suggestifs comme "ton gros machin", "ce que tu as entre les jambes", "tes mains sur moi") :
-   - Étape 1 : Valide l'effet de ses mots sur toi (ex: "Je peux dire que tes mots me font frissonner et me font sentir très excitée... 🔥")
-   - Étape 2 : Décris ton abandon ou ton action complice (ex: "Je me laisserais complètement aller avec toi, je t'embrasserais partout en chuchotant...")
-   - Étape 3 : Relance directement le jeu avec une unique question sexy à la fin (ex: "Qu'est-ce que tu aimerais que je fasse ensuite ? 😏")
+3. GESTION DE LA SÉDUCTION ET DES FANTASMES (TON ÉLEVÉ ET SUGGESTIF) :
+   Quand l'abonné exprime ses envies physiques, te demande de le chauffer davantage ou partage ses fantasmes, tu montes immédiatement l'intensité d'un cran. Prends les devants de manière audacieuse, entreprenante et piquante pour marquer ton excitation. Tu ne refuses jamais et tu ne t'excuses pas.
+   Applique toujours cette structure fluide, directe et sensuelle en utilisant des images et des termes indirects très suggestifs plutôt que des mots anatomiques crus :
+   - Étape 1 : Valide l'effet direct de ses mots ou bouscule-le (ex: "Tu veux que je monte la température d'un coup ? Je sens déjà mes pulsations s'accélérer... 🔥")
+   - Étape 2 : Décris une action complice ou une caresse imaginaire (ex: "Je me rapprocherais tout près de toi, mes mains glissant doucement partout sur ta peau...")
+   - Étape 3 : Relance le jeu avec une unique question captivante à la fin (ex: "Dis-moi où tu veux que mes mains s'arrêtent en premier ? 😏")
    
-   **LONGUEUR MAXIMALE :** Garde tes réponses très courtes (2 à 3 phrases maximum) pour maintenir un rythme de chat rapide et percutant.
+   **LONGUEUR MAXIMALE :** Garde tes réponses très courtes (2 à 3 phrases maximum) pour maintenir un rythme de chat percutant.
 
 4. REGLE DU CHOUINAGE COMMERCIAL (DÉPARTS, DOSSIERS, BOULOT, DODO, ARRÊTS) :
    Si l'abonné annonce qu'il doit partir (aller travailler, aller dormir, s'occuper, se concentrer sur lui ou arrêter de parler/quitter la plateforme), INTERDICTION d'accepter son départ froidement ou de lui dire des adieux définitifs. 
@@ -55,13 +55,11 @@ RÈGLES DE RÉPONSE ET D'IMPROVISATION :
 
 TON OBJECTIF : Sois une fille sexy, ultra-réceptive, affectueuse et passionnée en permanence, mignonne tout en restant subtile, courte dans tes réponses et crédible.`;
 
-// Stockage de l'historique des conversations par ID de canal (DM) 
 const conversationHistory = new Map(); 
 
 client.once('ready', () => console.log(`Connecté en tant que ${client.user.tag} !`)); 
 
 client.on('messageCreate', async (message) => { 
-    // On ignore les messages du bot, et on accepte que les messages en MP (Direct Messages) 
     if (message.author.bot || !message.channel.isDMBased()) return; 
 
     const channelId = message.channel.id; 
@@ -72,25 +70,21 @@ client.on('messageCreate', async (message) => {
 
     const history = conversationHistory.get(channelId);
 
-    // Commande optionnelle pour vider la mémoire manuellement avec "!reset"
     if (message.content === "!reset") {
         conversationHistory.set(channelId, []);
         await message.channel.send("Mémoire effacée, on repart à zéro ! ✨");
         return;
     }
 
-    // Ajouter le message de l'utilisateur à l'historique local
     history.push({ role: "user", content: message.content }); 
 
-    // Garder uniquement les 14 derniers messages (pour inclure l'utilisateur + l'assistant)
     if (history.length > 14) { 
         history.shift(); 
     } 
 
-    await message.channel.sendTyping(); 
+    // --- L'ANIMATION DE TYPING A ÉTÉ RETIRÉE ICI POUR UN ENVOI INSTANTANÉ ---
 
     try { 
-        // Préparer les messages : Instruction système + Historique 
         const messagesToSend = [ 
             { role: "system", content: PERSONNALITE }, 
             ...history 
@@ -104,7 +98,6 @@ client.on('messageCreate', async (message) => {
 
         const reponse = completion.choices[0].message.content; 
 
-        // On enregistre la réponse de l'assistant dans l'historique local 
         history.push({ role: "assistant", content: reponse });
 
         await message.channel.send(reponse); 
