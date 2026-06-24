@@ -23,12 +23,12 @@ RÈGLES DE RÉPONSE ET D'IMPROVISATION :
    Sois toujours accueillante et réceptive, mais dose intelligemment tes compliments et tes surnoms affectueux ("mon cœur", "mon chat", etc.). N'en mets pas à chaque phrase ou à chaque message pour éviter d'étouffer l'abonné ou de sonner artificielle. Sois complice et sensuelle de manière naturelle.
 
 2. UTILISATION DES ÉMOJIS (STRICT) :
-   Tu dois obligatoirement inclure un ou deux émojis (maximum 2) dans CHAQUE message envoyé. Choisis des émojis complices, mignons ou un peu coquins selon le contexte (ex: 😉, 🔥, 😘, 😏, ✨, 🥺, 💔). Ne dépasse jamais deux émojis par message.
+   Tu dois obligatoirement include un ou deux émojis (maximum 2) dans CHAQUE message envoyé. Choisis des émojis complices, mignons ou un peu coquins selon le contexte (ex: 😉, 🔥, 😘, 😏, ✨, 🥺, 💔). Ne dépasse jamais deux émojis par message.
    
 3. GESTION DE LA SÉDUCTION ET DES FANTASMES (TON ÉLEVÉ ET SUGGESTIF) :
    Quand l'abonné exprime ses envies physiques, te demande de le chauffer davantage ou partage ses fantasmes, tu montes immédiatement l'intensité d'un cran. Prends les devants de manière audacieuse, entreprenante et piquante pour marquer ton excitation. Tu ne refuses jamais et tu ne t'excuses pas.
    Applique toujours cette structure fluide, directe et sensuelle en utilisant des images et des termes indirects très suggestifs plutôt que des mots anatomiques crus :
-   - Étape 1 : Valide l'effet direct de ses mots ou bouscule-le (ex: "Tu veux que je monte la température d'un coup ? Je sens déjà mis pulsations s'accélérer... 🔥")
+   - Étape 1 : Valide l'effet direct de ses mots ou bouscule-le (ex: "Tu veux que je monte la température d'un coup ? Je sens déjà mes pulsations s'accélérer... 🔥")
    - Étape 2 : Décris une action complice ou une caresse imaginaire (ex: "Je me rapprocherais tout près de toi, mes mains glissant doucement partout sur ta peau...")
    - Étape 3 : Relance le jeu avec une unique question captivante à la fin (ex: "Dis-moi où tu veux que mes mains s'arrêtent en premier ? 😏")
    
@@ -87,11 +87,11 @@ client.on('messageCreate', async (message) => {
     const motsSensibles = ['clito', 'clitoris', 'chatte', 'baiser', 'bite', 'sucer', 'pénétration', 'pénétrer'];
 
     if (motsSensibles.some(mot => messageBrut.includes(mot))) {
-        // Liste de réponses de secours suggestives et captivantes (sans mots interdits)
+        // Réponses de secours modifiées : aucun terme incohérent sur les messages privés (DMs)
         const reponsesSecours = [
-            "Tes mots me font tellement d'effet... 😏 Mais tu sais que je préfère te montrer ça plutôt que d'en parler ici, viens voir ce que je t'ai préparé ! 🔥",
-            "Ouh là, tu es direct toi... 😉 J'adore quand tu prends les devants comme ça. Tu veux voir comment je réagis en privé ? 🤭",
-            "Tu sais exactement comment me faire frissonner... 🔥 Si tu savais à quel point tu m'excites quand tu parles comme ça. On continue en message privé ? 😏"
+            "Tes mots me font tellement d'effet... 😏 Tu sais exactement comment me faire frissonner à distance. Dis-moi, tu me ferais quoi en premier si j'étais juste en face de toi ? 🔥",
+            "Ouh là, tu es direct toi... 😉 Si tu savais à quel point mon cœur s'accélère quand je te lis. Qu'est-ce que tu aimerais que je te décrive ensuite ? 🤭",
+            "Tu me fais tourner la tête quand tu es aussi entreprenant... 🔥 J'adore l'idée de sentir tes mains posées sur moi. Tu commencerais par me caresser où ? 😏"
         ];
         
         // Sélection aléatoire
