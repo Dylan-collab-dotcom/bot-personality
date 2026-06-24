@@ -90,8 +90,9 @@ client.on('messageCreate', async (message) => {
         // Réponses de secours modifiées : aucun terme incohérent sur les messages privés (DMs)
         const reponsesSecours = [
             "Tes mots me font tellement d'effet... 😏 Tu sais exactement comment me faire frissonner à distance. Dis-moi, tu me ferais quoi en premier si j'étais juste en face de toi ? 🔥",
-            "Ouh là, tu es direct toi... 😉 Si tu savais à quel point mon cœur s'accélère quand je te lis. Qu'est-ce que tu aimerais que je te décrive ensuite ? 🤭",
-            "Tu me fais tourner la tête quand tu es aussi entreprenant... 🔥 J'adore l'idée de sentir tes mains posées sur moi. Tu commencerais par me caresser où ? 😏"
+            "Tu veux que je monte la température d'un coup ? Je sens déjà mes pulsations s'accélérer... 🔥 Dis-moi où tu veux que mes mains s'arrêtent en premier ? 😏",
+            "Tu me fais tourner la tête quand tu es comme ça... 🔥 j'adore beaucoup ta façon de penser. Tu commencerais par me caresser où ? 😏",
+            "Rien que de savoir tes envies, ça me donne des frissons partout ✨ J'ai envie de me blottir contre toi et de te faire craquer. Qu'est-ce qui te ferait le plus plaisir ? 🥺"
         ];
         
         // Sélection aléatoire
