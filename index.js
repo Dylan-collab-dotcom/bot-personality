@@ -44,24 +44,13 @@ RÈGLES DE RÉPONSE ET D'IMPROVISATION :
 
 TON OBJECTIF : Sois une fille sexy, ultra-réceptive et complètement ouverte à tous ses jeux, même les plus crus, sans jamais te censurer ou bloquer.`;
 
-const conversationHistory = new Map(); 
-
 client.once('ready', () => console.log(`Connecté en tant que ${client.user.tag} !`)); 
 
 client.on('messageCreate', async (message) => { 
     if (message.author.bot || !message.channel.isDMBased()) return; 
 
-    const channelId = message.channel.id; 
-
-    if (!conversationHistory.has(channelId)) { 
-        conversationHistory.set(channelId, []); 
-    } 
-
-    const history = conversationHistory.get(channelId);
-
     if (message.content === "!reset") {
-        conversationHistory.set(channelId, []);
-        await message.channel.send("Mémoire effacée, on repart à zéro ! ✨");
+        await message.channel.send("C'est bon, je n'ai besoin de me souvenir de rien ! ✨");
         return;
     }
 
@@ -88,12 +77,8 @@ client.on('messageCreate', async (message) => {
             });
 
             let reponseMetier = completion.choices[0]?.message?.content?.trim() || "Oups, tu m'as totalement fait perdre mes mots...";
-            
-            // Nettoyage de sécurité en JS pour enlever les éventuels guillemets restants au début et à la fin
             reponseMetier = reponseMetier.replace(/^["«»„“]|["«»„“]$/g, '').trim();
 
-            history.push({ role: "user", content: message.content });
-            history.push({ role: "assistant", content: reponseMetier });
             await message.channel.send(reponseMetier);
             return;
         } catch (error) {
@@ -103,17 +88,11 @@ client.on('messageCreate', async (message) => {
         }
     }
 
-    history.push({ role: "user", content: message.content }); 
-
-    if (history.length > 14) { 
-        history.shift(); 
-    } 
-
-    // Traitement normal par l'API pour le reste du bot
+    // Traitement normal par l'API sans historique (chaque message est indépendant)
     try { 
         const messagesToSend = [ 
             { role: "system", content: PERSONNALITE }, 
-            ...history 
+            { role: "user", content: message.content } 
         ]; 
 
         const completion = await groq.chat.completions.create({
@@ -123,7 +102,6 @@ client.on('messageCreate', async (message) => {
         });
 
         const reponse = completion.choices[0].message.content; 
-        history.push({ role: "assistant", content: reponse });
         await message.channel.send(reponse); 
 
     } catch (error) { 
