@@ -83,13 +83,13 @@ client.on('messageCreate', async (message) => {
                         content: metier
                     }
                 ],
-                temperature: 1.2, // Température augmentée pour maximiser la variété et l'originalité à chaque appel
+                temperature: 1.2,
                 max_tokens: 150
             });
 
             let reponseMetier = completion.choices[0]?.message?.content?.trim() || "Oups, tu m'as totalement fait perdre mes mots...";
             
-            // Sécurité en JS pour nettoyer les guillemets au cas où le modèle en remettrait
+            // Nettoyage de sécurité en JS pour enlever les éventuels guillemets restants au début et à la fin
             reponseMetier = reponseMetier.replace(/^["«»„“]|["«»„“]$/g, '').trim();
 
             history.push({ role: "user", content: message.content });
