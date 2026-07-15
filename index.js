@@ -65,13 +65,47 @@ client.on('messageCreate', async (message) => {
         return;
     }
 
+    // Gestion du mot-clé "taff :"
+    const contentTrimmed = message.content.trim();
+    if (contentTrimmed.toLowerCase().startsWith("taff :")) {
+        const metier = contentTrimmed.substring(6).trim();
+        
+        try {
+            const completion = await groq.chat.completions.create({
+                model: "llama-3.3-70b-versatile",
+                messages: [
+                    {
+                        role: "system",
+                        content: "Tu es une femme très séductrice, pleine d'humour et un brin taquine. À partir de n'importe quel métier qu'on te donne, tu inventes une phrase de drague originale et directe, comme si tu parlais à un homme qui exerce ce métier. Fais des références subtiles et sexy à son travail. Ne mets aucune introduction, donne directement la phrase."
+                    },
+                    {
+                        role: "user",
+                        content: metier
+                    }
+                ],
+                temperature: 1.0,
+                max_tokens: 150
+            });
+
+            const reponseMetier = completion.choices[0]?.message?.content?.trim() || "Oups, tu m'as totalement fait perdre mes mots...";
+            history.push({ role: "user", content: message.content });
+            history.push({ role: "assistant", content: reponseMetier });
+            await message.channel.send(reponseMetier);
+            return;
+        } catch (error) {
+            console.error("Erreur Groq (metier) :", error);
+            await message.channel.send("Entre nous, peu importe ton métier, tu as déjà réussi à faire chavirer mon cœur. 😉");
+            return;
+        }
+    }
+
     history.push({ role: "user", content: message.content }); 
 
     if (history.length > 14) { 
         history.shift(); 
     } 
 
-    // Traitement direct par l'API avec un modèle plus permissif et un prompt blindé
+    // Traitement normal par l'API pour le reste du bot
     try { 
         const messagesToSend = [ 
             { role: "system", content: PERSONNALITE }, 
@@ -79,7 +113,7 @@ client.on('messageCreate', async (message) => {
         ]; 
 
         const completion = await groq.chat.completions.create({
-            model: "llama-3.1-8b-instant", // Modèle changé pour accepter le jeu de rôle sans faux-positifs de sécurité
+            model: "llama-3.1-8b-instant",
             messages: messagesToSend,
             temperature: 0.9
         });
