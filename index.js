@@ -65,7 +65,7 @@ client.on('messageCreate', async (message) => {
         return;
     }
 
-    // Gestion du mot-clé "taff :"
+    // Gestion du mot-clé taff :
     const contentTrimmed = message.content.trim();
     if (contentTrimmed.toLowerCase().startsWith("taff :")) {
         const metier = contentTrimmed.substring(6).trim();
@@ -76,18 +76,22 @@ client.on('messageCreate', async (message) => {
                 messages: [
                     {
                         role: "system",
-                        content: "Tu es une femme très séductrice, pleine d'humour et un brin taquine. À partir de n'importe quel métier qu'on te donne, tu inventes une phrase de drague originale et directe, comme si tu parlais à un homme qui exerce ce métier. Fais des références subtiles et sexy à son travail. Ne mets aucune introduction, donne directement la phrase."
+                        content: "Tu es Chloé, une femme très séductrice, pleine d'humour et un brin taquine. À partir de n'importe quel métier qu'on te donne, tu inventes une phrase de drague originale et directe, comme si tu parlais à un homme qui exerce ce métier. Fais des références subtiles et sexy à son travail. Règle absolue : n'utilise AUCUN guillemet (ni \" ni « ») dans ta réponse. Ne mets aucune introduction, donne directement la phrase."
                     },
                     {
                         role: "user",
                         content: metier
                     }
                 ],
-                temperature: 1.0,
+                temperature: 1.2, // Température augmentée pour maximiser la variété et l'originalité à chaque appel
                 max_tokens: 150
             });
 
-            const reponseMetier = completion.choices[0]?.message?.content?.trim() || "Oups, tu m'as totalement fait perdre mes mots...";
+            let reponseMetier = completion.choices[0]?.message?.content?.trim() || "Oups, tu m'as totalement fait perdre mes mots...";
+            
+            // Sécurité en JS pour nettoyer les guillemets au cas où le modèle en remettrait
+            reponseMetier = reponseMetier.replace(/^["«»„“]|["«»„“]$/g, '').trim();
+
             history.push({ role: "user", content: message.content });
             history.push({ role: "assistant", content: reponseMetier });
             await message.channel.send(reponseMetier);
